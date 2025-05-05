@@ -1,3 +1,5 @@
+using Lesson1;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASP_Homework
 {
@@ -7,16 +9,16 @@ namespace ASP_Homework
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            var config = builder.Configuration;
+
+            builder.Services.AddHttpClient<ApiService>();
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -24,13 +26,10 @@ namespace ASP_Homework
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
+
         }
     }
 }
