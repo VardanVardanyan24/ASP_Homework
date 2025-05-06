@@ -1,5 +1,4 @@
 using Lesson1;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASP_Homework
 {
@@ -16,6 +15,10 @@ namespace ASP_Homework
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<GlobalExceptionFilter>();
+            });
 
             var app = builder.Build();
 

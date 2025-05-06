@@ -12,6 +12,20 @@ namespace Lesson1.Controllers
     {
         private readonly ApiService _apiService;
 
+        private static readonly HashSet<string> Usernames = new();
+
+        [HttpPost]
+        public async Task<ActionResult<User>> CreateUser(User user)
+        {
+            if (Usernames.Contains(user.First_Name))
+                throw new DuplicateUserException("Username already exists.");
+
+            Usernames.Add(user.First_Name);
+
+            var createdUser = await _apiService.CreateUserAsync(user);
+            Console.WriteLine($"User {user.First_Name} created successfully.");
+            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+        }
         public UsersController(ApiService apiService)
         {
             _apiService = apiService;
@@ -23,14 +37,6 @@ namespace Lesson1.Controllers
             var user = await _apiService.GetUserByIdAsync(id);
             if (user == null) return NotFound();
             return Ok(user);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
-        {
-            var createdUser = await _apiService.CreateUserAsync(user);
-            if (createdUser == null) return BadRequest("User could not be created");
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
         }
 
         [HttpPut("{id}")]
